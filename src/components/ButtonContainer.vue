@@ -6,7 +6,7 @@
   <div class="header__buttons">
     <HeaderButton number = 1 />
     <HeaderButton number = 2 />
-    <HeaderButton number = 3 marginBottom = '10px' />
+    <HeaderButton number = 3 margin-bottom = '10px' />
   </div>
 </template>
 

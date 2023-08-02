@@ -11,7 +11,7 @@ import HeaderText from './components/HeaderText.vue'
   </header>
   <main class="body__main">
     <Image />
-    <Image marginBottom = '30px' />
+    <Image margin-bottom = '30px' />
   </main>
 </template>
 
