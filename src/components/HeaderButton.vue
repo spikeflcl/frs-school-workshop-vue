@@ -1,17 +1,16 @@
 <template>
-  <button class="div__button mb-10">button {{ number }}</button>
+  <button type="button" class="div__button">button {{ number }}</button>
 </template>
 
 <script setup>
 
   defineProps({
-    number: Number,
-    marginBottom: String
+    number: Number
   })
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .div__button {
     background-color: white;
     border: none;
@@ -20,8 +19,13 @@
     font-size: 18px;
   }
 
-  .mb-10 {
-    margin-bottom: v-bind(marginBottom);
+  @media screen and (min-width: 768px) and (max-width: 1199px) {
+    .header__buttons {
+      padding-bottom: 0;
+      align-items: flex-end;
+      justify-content: space-around;
+      margin-right: 10px;
+    }
   }
-
+  
 </style>
