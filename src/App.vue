@@ -1,13 +1,25 @@
 <script setup>
 import HeaderButtons from './components/ButtonContainer.vue'
+import MobileMenu from './components/MobileMenu.vue';
 import Image from './components/MainImage.vue'
 import HeaderText from './components/HeaderText.vue'
+import { ref, computed } from 'vue';
+
+const screenWidth = ref(window.innerWidth);
+
+const mobile = computed(() => screenWidth.value < 768);
+
+window.addEventListener('resize', () => {
+  screenWidth.value = window.innerWidth;
+});
+
 </script>
 
 <template>
   <header class="body__header">
     <HeaderText />
-    <HeaderButtons />
+    <MobileMenu class="mobile-menu" v-if="mobile" />
+    <HeaderButtons v-else />
   </header>
   <main class="body__main">
     <Image />

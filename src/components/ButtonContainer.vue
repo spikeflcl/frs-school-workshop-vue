@@ -4,9 +4,9 @@
 
 <template>
   <div class="header__buttons">
-    <HeaderButton :number='1' />
-    <HeaderButton :number='2' />
-    <HeaderButton :number='3' class="mb-10" />
+    <HeaderButton :number="1" />
+    <HeaderButton :number="2" />
+    <HeaderButton :number="3" class="mb-10" />
   </div>
 </template>
 
