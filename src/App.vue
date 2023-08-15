@@ -3,7 +3,8 @@ import HeaderButtons from './components/ButtonContainer.vue'
 import MobileMenu from './components/MobileMenu.vue';
 import Image from './components/MainImage.vue'
 import HeaderText from './components/HeaderText.vue'
-import { ref, computed } from 'vue';
+import BurgerButton from './components/BurgerButton.vue';
+import { ref, computed, onMounted } from 'vue';
 
 const screenWidth = ref(window.innerWidth);
 
@@ -13,11 +14,31 @@ window.addEventListener('resize', () => {
   screenWidth.value = window.innerWidth;
 });
 
+const menu = ref(document.querySelector('.mobile-menu'));
+
+
+const showHideMenu = (isChecked) => {
+  if (isChecked) {
+    menu.value.style.transform = 'translateX(0)';
+  } else {
+    menu.value.style.transform = 'translateX(100%)';
+  }
+}
+
+onMounted(() => {
+  menu.value = document.querySelector('.mobile-menu');
+});
+
 </script>
 
 <template>
   <header class="body__header">
-    <HeaderText />
+    <div class="header-content">
+      <HeaderText />
+      <div class="burger-container" v-if="mobile">
+        <BurgerButton @burger-toggle="showHideMenu" />
+      </div>
+    </div>
     <MobileMenu class="mobile-menu" v-if="mobile" />
     <HeaderButtons v-else />
   </header>
@@ -28,8 +49,13 @@ window.addEventListener('resize', () => {
 </template>
 
 <style lang="scss" scoped>
+  * {
+    overflow: hidden;
+  }
+
   .body__header {
     background-color: #555;
+    overflow: hidden;
   }
 
   .body__main {
@@ -42,6 +68,17 @@ window.addEventListener('resize', () => {
 
   .mb-30 {
     margin-bottom: 30px;
+  }
+
+  .header-content {
+    display: flex;
+    align-items: center;
+  }
+
+  @media screen and (max-width: 768px) {
+    .body__header {
+      padding-bottom: 80px;
+    }    
   }
 
   @media screen and (min-width: 768px) and (max-width: 1199px) {

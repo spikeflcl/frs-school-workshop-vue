@@ -14,25 +14,62 @@
   box-sizing: border-box;
 }
 
+.burger-button-container {
+  position: absolute;
+  top: 40px;
+  right: 50px;
+  transition: 0.2s;
+}
 .burger-button {
+  position: relative;
+
   &, &::after, &::before {
-    display: block;
+    display: block; 
     background-color: #fff;
     position: absolute;
-    height: 4px;
+    height: 3px;
     width: 40px;
     border-radius: 3px;
+    z-index: 1;
   }
   
   &::before {
+    position: absolute;
     content: '';
-    margin-top: -9px;
+    top: -9px;
   }
 
   &::after {
+    position: absolute;
     content: '';
-    margin-top: 9px;
+    top: 9px;
   }
+ 
 }
+
+  input:checked {
+    + .burger-button-container {
+      right: 180px;
+      .burger-button {
+        &, &::after, &::before {          
+          background-color: #000;
+        }
+
+        & {
+          background-color: transparent;
+        }
+
+        &::before {
+          transform: rotate(-45deg);
+          top: 0px;
+        }
+
+        &::after {
+          transform: rotate(45deg);
+          top: 0px;
+        }
+      }
+    } 
+  }
 
 </style>
