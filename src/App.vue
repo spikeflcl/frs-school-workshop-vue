@@ -14,6 +14,7 @@ const mobile = computed(() => screenWidth.value < 768);
 const tablet = computed(() => screenWidth.value < 1367);
 
 onMounted(() => {
+  screenWidth.value = window.innerWidth;
   window.addEventListener('resize', () => {
     screenWidth.value = window.innerWidth;
     if (tablet.value) {
