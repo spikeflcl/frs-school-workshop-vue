@@ -34,8 +34,7 @@
     padding-right: 48px;
   }
 
-  @media screen and (min-width: 768px) and (max-width: 1199px) {
-    
+  @media screen and (min-width: 768px) and (max-width: 1366px) {
    .header__buttons {
       gap: 20px;
       margin-right: 21px;

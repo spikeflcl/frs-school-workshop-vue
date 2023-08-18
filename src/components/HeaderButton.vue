@@ -19,7 +19,7 @@
     font-size: 18px;
   }
 
-  @media screen and (min-width: 768px) and (max-width: 1199px) {
+  @media screen and (min-width: 768px) and (max-width: 1366px) {
     .header__buttons {
       padding-bottom: 0;
       align-items: flex-end;

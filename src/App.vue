@@ -4,30 +4,41 @@ import MobileMenu from './components/MobileMenu.vue';
 import Image from './components/MainImage.vue'
 import HeaderText from './components/HeaderText.vue'
 import BurgerButton from './components/BurgerButton.vue';
+import AdBanner from './components/AdBanner.vue';
 import { ref, computed, onMounted } from 'vue';
 
-const screenWidth = ref(window.innerWidth);
+const screenWidth = ref(null);
+const adVisbility = ref('hidden');
 
 const mobile = computed(() => screenWidth.value < 768);
+const tablet = computed(() => screenWidth.value < 1367);
 
-window.addEventListener('resize', () => {
-  screenWidth.value = window.innerWidth;
-});
+onMounted(() => {
+  window.addEventListener('resize', () => {
+    screenWidth.value = window.innerWidth;
+    if (tablet.value) {
+      adVisbility.value = 'hidden';
+    }
+  });
+})
 
-const menu = ref(document.querySelector('.mobile-menu'));
+const menuTransform = ref('translateX(100%)');
 
-
-const showHideMenu = (isChecked) => {
-  if (isChecked) {
-    menu.value.style.transform = 'translateX(0)';
+const showAd = () => {
+  if (adVisbility.value === 'hidden') {
+    adVisbility.value = 'visible';
   } else {
-    menu.value.style.transform = 'translateX(100%)';
+    adVisbility.value = 'hidden';
   }
 }
 
-onMounted(() => {
-  menu.value = document.querySelector('.mobile-menu');
-});
+const showHideMenu = (isChecked) => {
+  if (isChecked) {
+    menuTransform.value = 'translateX(0)';
+  } else {
+    menuTransform.value = 'translateX(100%)';
+  }
+}
 
 </script>
 
@@ -39,13 +50,14 @@ onMounted(() => {
         <BurgerButton @burger-toggle="showHideMenu" />
       </div>
     </div>
-    <MobileMenu class="mobile-menu" v-if="mobile" />
-    <HeaderButtons v-else />
+    <MobileMenu :style="{ transform: menuTransform }" class="mobile-menu" v-if="mobile" />
+    <HeaderButtons v-else @ad-toggle="showAd" />
   </header>
   <main class="body__main">
     <Image />
     <Image class="mb-30" />
   </main>
+  <AdBanner :style="{ visibility: adVisbility }" />
 </template>
 
 <style lang="scss" scoped>
@@ -77,11 +89,11 @@ onMounted(() => {
 
   @media screen and (max-width: 768px) {
     .body__header {
-      padding-bottom: 80px;
+      padding-bottom: 60px;
     }    
   }
 
-  @media screen and (min-width: 768px) and (max-width: 1199px) {
+  @media screen and (min-width: 768px) and (max-width: 1366px) {
     .body__header {
       width: 720px;
       margin: 0 auto;
@@ -104,4 +116,26 @@ onMounted(() => {
     }
   }
 
+  @media screen and (min-width: 1367px) {
+    .body__header {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+    }
+
+    .body__main {
+      position: absolute;
+      margin-left: 175px;
+      margin-top: 20px;
+      width: 600px;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      height: 460px;
+    }
+  }
 </style>
