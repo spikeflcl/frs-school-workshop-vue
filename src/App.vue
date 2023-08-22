@@ -1,29 +1,36 @@
 <script setup>
 import HeaderButtons from './components/ButtonContainer.vue'
 import MobileMenu from './components/MobileMenu.vue';
-import Image from './components/MainImage.vue'
 import HeaderText from './components/HeaderText.vue'
 import BurgerButton from './components/BurgerButton.vue';
 import AdBanner from './components/AdBanner.vue';
-import { ref, computed, onMounted } from 'vue';
+import InputMenu from './components/InputMenu.vue';
+import ImageContainer from './components/ImageContainer.vue';
+import InputToggle from './components/InputToggle.vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 const screenWidth = ref(null);
 const adVisbility = ref('hidden');
-
 const mobile = computed(() => screenWidth.value < 768);
 const tablet = computed(() => screenWidth.value < 1367);
+const menuTransform = ref('translateX(100%)');
+const show_form = ref(false)
 
-onMounted(() => {
-  screenWidth.value = window.innerWidth;
-  window.addEventListener('resize', () => {
+const changeVisibility = () => {
     screenWidth.value = window.innerWidth;
     if (tablet.value) {
       adVisbility.value = 'hidden';
     }
-  });
-})
+  };
 
-const menuTransform = ref('translateX(100%)');
+onMounted(() => {
+  screenWidth.value = window.innerWidth;
+  window.addEventListener('resize', changeVisibility);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', changeVisibility);
+});
 
 const showAd = () => {
   if (adVisbility.value === 'hidden') {
@@ -31,7 +38,11 @@ const showAd = () => {
   } else {
     adVisbility.value = 'hidden';
   }
-}
+};
+
+const formToggle = (value) => {
+  show_form.value = value;
+};
 
 const showHideMenu = (isChecked) => {
   if (isChecked) {
@@ -39,7 +50,7 @@ const showHideMenu = (isChecked) => {
   } else {
     menuTransform.value = 'translateX(100%)';
   }
-}
+};
 
 </script>
 
@@ -52,11 +63,12 @@ const showHideMenu = (isChecked) => {
       </div>
     </div>
     <MobileMenu :style="{ transform: menuTransform }" class="mobile-menu" v-if="mobile" />
-    <HeaderButtons v-else @ad-toggle="showAd" />
+    <HeaderButtons v-else @ad-toggle="!tablet && showAd()" />
   </header>
   <main class="body__main">
-    <Image />
-    <Image class="mb-30" />
+    <ImageContainer />
+    <InputToggle @show-menu="formToggle" />
+    <InputMenu v-show="show_form" />
   </main>
   <AdBanner :style="{ visibility: adVisbility }" />
 </template>
@@ -77,10 +89,6 @@ const showHideMenu = (isChecked) => {
     align-items: center;
     background-color: #f8f8f8;
     box-shadow: 0 10px 10px rgba(0, 0, 0, .1);
-  }
-
-  .mb-30 {
-    margin-bottom: 30px;
   }
 
   .header-content {
@@ -106,15 +114,7 @@ const showHideMenu = (isChecked) => {
     .body__main {
       width: 600px;
       margin: 0 auto;
-      flex-direction: row;
-      justify-content: center;
-      padding-bottom: 30px;
-      gap: 24px;
-    }
-
-    .mb-30 {
-      margin-bottom: 0px;
-    }
+    }    
   }
 
   @media screen and (min-width: 1367px) {
@@ -133,9 +133,7 @@ const showHideMenu = (isChecked) => {
       margin-left: 175px;
       margin-top: 20px;
       width: 600px;
-      flex-direction: row;
-      justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       height: 460px;
     }
   }
