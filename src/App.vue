@@ -68,7 +68,7 @@ const showHideMenu = (isChecked) => {
   <main class="body__main">
     <ImageContainer />
     <InputToggle @show-menu="formToggle" />
-    <InputMenu v-show="show_form" />
+    <InputMenu v-show="show_form" @filled-form="(n) => console.log(n)"/>
   </main>
   <AdBanner :style="{ visibility: adVisbility }" />
 </template>
