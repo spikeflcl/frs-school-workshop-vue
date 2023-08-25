@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, toRaw } from 'vue';
 
 const formDate = ref(new Date().toISOString().slice(0, 10));
 const formChecked = ref([]);
@@ -7,13 +7,17 @@ const formEmail = ref('');
 const formName = ref('');
 const formText = ref('');
 
-const form = {
-  name: formName,
-  email: formEmail,
-  date: formDate,
-  checkedErrors: formChecked,
-  reportContent: formText
-};
+const sendForm = () => {
+  const form = {
+    name: formName.value,
+    email: formEmail.value,
+    date: formDate.value,
+    checkedErrors: toRaw(formChecked.value),
+    reportContent: formText.value
+  };
+
+  return form;
+}
 
 const emit = defineEmits(['filledForm'])
 
@@ -21,11 +25,19 @@ const emit = defineEmits(['filledForm'])
 
 <template>
   <div>
-    <form onsubmit="return false">
-      <input class="text-input" type="email" v-model="formEmail" required>
-      <input class="text-input" type="text" pattern="^[A-Z].*" title="Must start with a capital letter." v-model="formName" required>
+    <form @submit.prevent>
+      <div class="input-container m-y-10">
+        <label class="label">
+          E-mail
+          <input class="text-input" type="email" v-model="formEmail" required>
+        </label>
+        <label class="label" for="name">
+          Name
+          <input class="text-input" type="text" pattern="^[A-Z].*" title="Must start with a capital letter." v-model="formName" required>
+        </label>
+      </div>
       <p>{{  }}</p>
-      <fieldset>
+      <fieldset class="fieldset m-y-10">
         <input class="form-checkbox" type="checkbox" value="Content Error" id="content_error" v-model="formChecked" checked>
         <label class="label" for="content_error">Content Error</label>
         <input class="form-checkbox" type="checkbox" value="Broken Element" id="broken_element" v-model="formChecked">
@@ -33,10 +45,12 @@ const emit = defineEmits(['filledForm'])
         <input class="form-checkbox" type="checkbox" value="Other Error" id="other_error" v-model="formChecked">
         <label class="label" for="other_error">Other Error</label>
       </fieldset>
-      <input class="text-input" type="date" v-model="formDate">
-      <textarea class="text-input" rows="5" v-model="formText" maxlength="150"></textarea>
-      <button class="input-button" type="submit" @click="$emit('filledForm', form)">Wyślij formularz</button>
-      <button class="input-button" type="reset">Wyczyść formularz</button>
+      <div class="input-container">
+        <input class="text-input" type="date" v-model="formDate">
+        <textarea class="text-input" rows="5" v-model="formText" maxlength="150"></textarea>
+        <button class="input-button" type="submit" @click="$emit('filledForm', sendForm())">Wyślij formularz</button>
+        <button class="input-button" type="reset">Wyczyść formularz</button>
+      </div>
     </form>
   </div>
 </template>
@@ -44,5 +58,24 @@ const emit = defineEmits(['filledForm'])
 <style lang="scss" scoped>
   .label {
     font-size: 0.5rem;
+  }
+
+  .m-y-10 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 50%;
+  }
+
+  .fieldset {
+    display: flex;
+    gap: 5px;
   }
 </style>

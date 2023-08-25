@@ -7,35 +7,26 @@ import AdBanner from './components/AdBanner.vue';
 import InputMenu from './components/InputMenu.vue';
 import ImageContainer from './components/ImageContainer.vue';
 import InputToggle from './components/InputToggle.vue';
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, watch } from 'vue';
+import { useBreakpoints } from '@vueuse/core';
 
-const screenWidth = ref(null);
+const breakpoints = useBreakpoints({
+  mobile: 768,
+  tablet: 1367
+});
+
+const mobile = breakpoints.smaller('mobile');
+const desktop = breakpoints.greater('tablet');
 const adVisbility = ref('hidden');
-const mobile = computed(() => screenWidth.value < 768);
-const tablet = computed(() => screenWidth.value < 1367);
 const menuTransform = ref('translateX(100%)');
 const show_form = ref(false)
 
-const changeVisibility = () => {
-    screenWidth.value = window.innerWidth;
-    if (tablet.value) {
-      adVisbility.value = 'hidden';
-    }
-  };
-
-onMounted(() => {
-  screenWidth.value = window.innerWidth;
-  window.addEventListener('resize', changeVisibility);
-});
-
-onUnmounted(() => {
-  window.removeEventListener('resize', changeVisibility);
-});
-
 const showAd = () => {
   if (adVisbility.value === 'hidden') {
+    console.log(adVisbility.value)
     adVisbility.value = 'visible';
   } else {
+    console.log(adVisbility.value)
     adVisbility.value = 'hidden';
   }
 };
@@ -52,6 +43,17 @@ const showHideMenu = (isChecked) => {
   }
 };
 
+watch(mobile, () => {
+  if (mobile.value) {
+    menuTransform.value = 'translateX(100%)';
+    show_form.value = false;
+  }
+})
+
+watch(desktop, () => {
+  if (!desktop.value) adVisbility.value = 'hidden';
+})
+
 </script>
 
 <template>
@@ -63,7 +65,7 @@ const showHideMenu = (isChecked) => {
       </div>
     </div>
     <MobileMenu :style="{ transform: menuTransform }" class="mobile-menu" v-if="mobile" />
-    <HeaderButtons v-else @ad-toggle="!tablet && showAd()" />
+    <HeaderButtons v-else @ad-toggle="desktop && showAd()" />
   </header>
   <main class="body__main">
     <ImageContainer />
