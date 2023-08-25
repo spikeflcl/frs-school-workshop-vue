@@ -1,7 +1,8 @@
 <script setup>
 import { ref, toRaw } from 'vue';
+import { useNow, useDateFormat } from '@vueuse/core'
 
-const formDate = ref(new Date().toISOString().slice(0, 10));
+const formDate = ref(useDateFormat(useNow(), 'YYYY-MM-DDTHH:mm'))
 const formChecked = ref([]);
 const formEmail = ref('');
 const formName = ref('');
@@ -15,12 +16,11 @@ const sendForm = () => {
     checkedErrors: toRaw(formChecked.value),
     reportContent: formText.value
   };
-
+  console.log(formDate.value)
   return form;
 }
 
 const emit = defineEmits(['filledForm'])
-
 </script>
 
 <template>
@@ -29,11 +29,11 @@ const emit = defineEmits(['filledForm'])
       <div class="input-container m-y-10">
         <label class="label">
           E-mail
-          <input class="text-input" type="email" v-model="formEmail" required>
+          <input class="text-input" type="email" name="email" v-model="formEmail" required>
         </label>
-        <label class="label" for="name">
+        <label class="label">
           Name
-          <input class="text-input" type="text" pattern="^[A-Z].*" title="Must start with a capital letter." v-model="formName" required>
+          <input class="text-input" type="text" name="name" pattern="^[A-Z].*" title="Must start with a capital letter." v-model="formName" required>
         </label>
       </div>
       <p>{{  }}</p>
@@ -46,8 +46,8 @@ const emit = defineEmits(['filledForm'])
         <label class="label" for="other_error">Other Error</label>
       </fieldset>
       <div class="input-container">
-        <input class="text-input" type="date" v-model="formDate">
-        <textarea class="text-input" rows="5" v-model="formText" maxlength="150"></textarea>
+        <input class="text-input" type="datetime-local" v-model="formDate">
+        <textarea class="text-input" rows="5" name="text" v-model="formText" maxlength="150"></textarea>
         <button class="input-button" type="submit" @click="$emit('filledForm', sendForm())">Wyślij formularz</button>
         <button class="input-button" type="reset">Wyczyść formularz</button>
       </div>

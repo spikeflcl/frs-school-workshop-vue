@@ -3,11 +3,9 @@
 </template>
 
 <script setup>
-
   defineProps({
     number: Number
   })
-
 </script>
 
 <style lang="scss" scoped>
@@ -27,5 +25,4 @@
       margin-right: 10px;
     }
   }
-  
 </style>

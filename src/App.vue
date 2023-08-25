@@ -53,7 +53,6 @@ watch(mobile, () => {
 watch(desktop, () => {
   if (!desktop.value) adVisbility.value = 'hidden';
 })
-
 </script>
 
 <template>
