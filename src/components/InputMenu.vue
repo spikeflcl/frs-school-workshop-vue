@@ -1,24 +1,31 @@
 <script setup>
 import { ref, toRaw } from 'vue';
 import { useNow, useDateFormat } from '@vueuse/core'
+import { dynamicDate } from '../composables/dynamicDate.js';
 
-const formDate = ref(useDateFormat(useNow(), 'YYYY-MM-DDTHH:mm'))
+const formattedDate = dynamicDate();
 const formChecked = ref([]);
 const formEmail = ref('');
 const formName = ref('');
 const formText = ref('');
 
 const sendForm = () => {
-  const form = {
+  return {
     name: formName.value,
     email: formEmail.value,
-    date: formDate.value,
+    date: formattedDate.value,
     checkedErrors: toRaw(formChecked.value),
     reportContent: formText.value
   };
-  console.log(formDate.value)
-  return form;
 }
+
+const resetForm = () => {
+  formattedDate.value = useDateFormat(useNow(), 'YYYY-MM-DDTHH:mm');
+  formChecked.value = [];
+  formEmail.value = '';
+  formName.value = '';
+  formText.value = '';
+};
 
 const emit = defineEmits(['filledForm'])
 </script>
@@ -46,10 +53,10 @@ const emit = defineEmits(['filledForm'])
         <label class="label" for="other_error">Other Error</label>
       </fieldset>
       <div class="input-container">
-        <input class="text-input" type="datetime-local" v-model="formDate">
+        <input class="text-input" type="datetime-local" v-model="formattedDate">
         <textarea class="text-input" rows="5" name="text" v-model="formText" maxlength="150"></textarea>
         <button class="input-button" type="submit" @click="$emit('filledForm', sendForm())">Wyślij formularz</button>
-        <button class="input-button" type="reset">Wyczyść formularz</button>
+        <button class="input-button" type="reset" @click="resetForm">Wyczyść formularz</button>
       </div>
     </form>
   </div>

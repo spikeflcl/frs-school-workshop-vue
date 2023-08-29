@@ -8,50 +8,22 @@ import InputMenu from './components/InputMenu.vue';
 import ImageContainer from './components/ImageContainer.vue';
 import InputToggle from './components/InputToggle.vue';
 import { ref, watch } from 'vue';
-import { useBreakpoints } from '@vueuse/core';
+import { useResponsive } from './composables/useResponsive.js';
 
-const breakpoints = useBreakpoints({
-  mobile: 768,
-  tablet: 1367
-});
-
-const mobile = breakpoints.smaller('mobile');
-const desktop = breakpoints.greater('tablet');
-const adVisbility = ref('hidden');
-const menuTransform = ref('translateX(100%)');
+const { mobile, desktop } = useResponsive();
+const adVisbility = ref(false);
+const menuTransform = ref(false);
 const show_form = ref(false)
-
-const showAd = () => {
-  if (adVisbility.value === 'hidden') {
-    console.log(adVisbility.value)
-    adVisbility.value = 'visible';
-  } else {
-    console.log(adVisbility.value)
-    adVisbility.value = 'hidden';
-  }
-};
-
-const formToggle = (value) => {
-  show_form.value = value;
-};
-
-const showHideMenu = (isChecked) => {
-  if (isChecked) {
-    menuTransform.value = 'translateX(0)';
-  } else {
-    menuTransform.value = 'translateX(100%)';
-  }
-};
 
 watch(mobile, () => {
   if (mobile.value) {
-    menuTransform.value = 'translateX(100%)';
+    menuTransform.value = false;
     show_form.value = false;
   }
 })
 
 watch(desktop, () => {
-  if (!desktop.value) adVisbility.value = 'hidden';
+  if (!desktop.value) adVisbility.value = false;
 })
 </script>
 
@@ -60,18 +32,18 @@ watch(desktop, () => {
     <div class="header-content">
       <HeaderText />
       <div class="burger-container" v-if="mobile">
-        <BurgerButton @burger-toggle="showHideMenu" />
+        <BurgerButton @burger-toggle="(isChecked) => menuTransform = isChecked" />
       </div>
     </div>
-    <MobileMenu :style="{ transform: menuTransform }" class="mobile-menu" v-if="mobile" />
-    <HeaderButtons v-else @ad-toggle="desktop && showAd()" />
+    <MobileMenu :style="{ transform: menuTransform ? 'translateX(0)' : 'translateX(100%)'}" class="mobile-menu" v-if="mobile" />
+    <HeaderButtons v-else @ad-toggle="desktop && (adVisbility = !adVisbility)" />
   </header>
   <main class="body__main">
     <ImageContainer />
-    <InputToggle @show-menu="formToggle" />
+    <InputToggle @show-menu="(value) => show_form = value" />
     <InputMenu v-show="show_form" @filled-form="(n) => console.log(n)"/>
   </main>
-  <AdBanner :style="{ visibility: adVisbility }" />
+  <AdBanner :style="{ visibility: adVisbility ? 'visible' : 'hidden' }" />
 </template>
 
 <style lang="scss" scoped>
@@ -135,7 +107,7 @@ watch(desktop, () => {
       margin-top: 20px;
       width: 600px;
       align-items: center;
-      height: 460px;
+      min-height: 460px;
     }
   }
 </style>
