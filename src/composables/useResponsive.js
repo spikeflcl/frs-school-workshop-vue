@@ -10,8 +10,5 @@ export function useResponsive() {
   const mobile = breakpoints.smaller('mobile');
   const desktop = breakpoints.greater('tablet');
 
-  return {
-    mobile,
-    desktop
-  }
+  return { mobile, desktop };
 }

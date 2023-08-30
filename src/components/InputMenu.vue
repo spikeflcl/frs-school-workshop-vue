@@ -1,9 +1,8 @@
 <script setup>
 import { ref, toRaw } from 'vue';
-import { useNow, useDateFormat } from '@vueuse/core'
-import { dynamicDate } from '../composables/dynamicDate.js';
+import { formattedDate } from '../composables/formattedDate.js';
 
-const formattedDate = dynamicDate();
+const formDate = formattedDate();
 const formChecked = ref([]);
 const formEmail = ref('');
 const formName = ref('');
@@ -13,14 +12,14 @@ const sendForm = () => {
   return {
     name: formName.value,
     email: formEmail.value,
-    date: formattedDate.value,
+    date: formDate.value,
     checkedErrors: toRaw(formChecked.value),
     reportContent: formText.value
   };
 }
 
 const resetForm = () => {
-  formattedDate.value = useDateFormat(useNow(), 'YYYY-MM-DDTHH:mm');
+  formDate.value = new Date();
   formChecked.value = [];
   formEmail.value = '';
   formName.value = '';
@@ -43,7 +42,6 @@ const emit = defineEmits(['filledForm'])
           <input class="text-input" type="text" name="name" pattern="^[A-Z].*" title="Must start with a capital letter." v-model="formName" required>
         </label>
       </div>
-      <p>{{  }}</p>
       <fieldset class="fieldset m-y-10">
         <input class="form-checkbox" type="checkbox" value="Content Error" id="content_error" v-model="formChecked" checked>
         <label class="label" for="content_error">Content Error</label>
@@ -53,7 +51,7 @@ const emit = defineEmits(['filledForm'])
         <label class="label" for="other_error">Other Error</label>
       </fieldset>
       <div class="input-container">
-        <input class="text-input" type="datetime-local" v-model="formattedDate">
+        <input class="text-input" type="datetime-local" v-model="formDate">
         <textarea class="text-input" rows="5" name="text" v-model="formText" maxlength="150"></textarea>
         <button class="input-button" type="submit" @click="$emit('filledForm', sendForm())">Wyślij formularz</button>
         <button class="input-button" type="reset" @click="resetForm">Wyczyść formularz</button>
